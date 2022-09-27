@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
 
-
 async function main() {
   const rsvpContractFactory = await ethers.getContractFactory("Web3RSVP");
   const rsvpContract = await rsvpContractFactory.deploy();
