@@ -9,3 +9,10 @@ typechain-types
 cache
 artifacts
 
+# Logs and task outputs
+.turbo
+
+# Task artifacts, folders and files to be cached
+build/**
+dist/**
+.next/*
