@@ -3,8 +3,9 @@
 	"version": "1.0.0",
 	"description": "",
 	"workspaces": [
-		"packages/*",
-		"apps/*"
+		"contracts/*",
+		"apps/*",
+		"subgraph/*"
 	],
 	"main": "index.js",
 	"scripts": {
