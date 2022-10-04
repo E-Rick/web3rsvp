@@ -2,6 +2,7 @@ import { ConnectButton as RKConnectButton } from '@rainbow-me/rainbowkit'
 import useHasMounted from '@/hooks/useHasMounted'
 import Navmenu from './NavMenu'
 import { useAccount } from 'wagmi'
+import { ExclamationCircleIcon } from '@heroicons/react/outline'
 
 type Visibility = 'always' | 'connected' | 'not_connected'
 
@@ -31,21 +32,12 @@ export const ConnectWallet = ({ connectText = 'Connect wallet', show = 'always',
 							if (chain.unsupported) {
 								return (
 									<button
-										className="inline-flex items-center px-2.5 py-2 rounded-md text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900/10 w-32 cursor-pointer"
-										// size="sm"
-										// variant="destructive"
-										// px="x4"
+										className="inline-flex items-center gap-2 px-2.5 py-2 rounded-md text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900/10 cursor-pointer"
 										onClick={openChainModal}
-										style={{ gap: 4, gridGap: 4 }}
 										{...props}
 									>
-										<p
-											// variant="paragraph-lg"
-											style={{ lineHeight: 0, top: 1, position: 'relative' }}
-										>
-											&#x26A0;
-										</p>{' '}
-										Wrong network
+										<ExclamationCircleIcon width={24} />
+										<span>Wrong network</span>
 									</button>
 								)
 							}
