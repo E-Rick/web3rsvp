@@ -28,7 +28,7 @@ async function makeFilesObjects(body) {
   // searc 
   const imageDirectory = resolve(process.cwd(), `public/images/${body.image}`);
   const files = await getFilesFromPath(imageDirectory);
-
+  
   files.push(new File([buffer], "data.json"));
   return files;
 }

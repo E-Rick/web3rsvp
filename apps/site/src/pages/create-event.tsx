@@ -81,15 +81,6 @@ export default function CreateEvent() {
 		}
 	}
 
-	useEffect(() => {
-		// disable scroll on <input> elements of type number
-		document.addEventListener('wheel', event => {
-			if (document.activeElement.type === 'number') {
-				document.activeElement.blur()
-			}
-		})
-	})
-
 	return (
 		<div className="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8">
 			<Head>
