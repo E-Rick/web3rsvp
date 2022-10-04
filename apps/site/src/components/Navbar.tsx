@@ -1,8 +1,6 @@
 import useHasMounted from '@/hooks/useHasMounted'
 import NextLink from './NextLink'
-import ThemeSwitcher from './ThemeSwitcher'
 import ConnectWallet from './ConnectWallet'
-import NextLinks from './NextLink'
 
 function Navbar() {
 	const mounted = useHasMounted()
@@ -12,7 +10,6 @@ function Navbar() {
 				<NextLink href="/">Cryptopia</NextLink>
 				<div className="flex items-center space-between">
 					<div className="flex items-center ml-10 space-x-4">
-						<ThemeSwitcher />
 						<ConnectWallet />
 					</div>
 				</div>
