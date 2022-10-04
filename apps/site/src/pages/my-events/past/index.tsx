@@ -3,8 +3,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount } from 'wagmi'
 import EventCard from '../../../components/EventCard'
+import { useAuth } from '@/hooks/useAuth'
 
 const MY_PAST_EVENTS = gql`
 	query Events($eventOwner: String, $currentTimestamp: String) {
@@ -22,9 +22,9 @@ const MY_PAST_EVENTS = gql`
 `
 
 export default function MyPastEvents() {
-	const { data: account } = useAccount()
+	const { address } = useAuth()
 
-	const eventOwner = account ? account.address.toLowerCase() : ''
+	const eventOwner = address ? address.toLowerCase() : ''
 	const [currentTimestamp, setEventTimestamp] = useState(new Date().getTime().toString())
 	const { loading, error, data } = useQuery(MY_PAST_EVENTS, {
 		variables: { eventOwner, currentTimestamp },
@@ -45,7 +45,7 @@ export default function MyPastEvents() {
 
 	return (
 		<Dashboard page="events" isUpcoming={false}>
-			{account ? (
+			{address ? (
 				<div>
 					{data && data.events.length == 0 && <p>No past events found</p>}
 					{data && data.events.length > 0 && (
@@ -62,7 +62,7 @@ export default function MyPastEvents() {
 										imageURL={event.imageURL}
 									/>
 									<Link href={`/my-events/past/${event.id}`}>
-										<a className="text-amber-800 text-sm truncate hover:underline">
+										<a className="text-sm truncate text-amber-800 hover:underline">
 											Confirm attendees
 										</a>
 									</Link>

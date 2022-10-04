@@ -21,7 +21,7 @@ module.exports = {
 		'react/jsx-props-no-spreading': 'off',
 		'import/prefer-default-export': 'off',
 		'no-param-reassign': 'off',
-		'import/resolver': {},
+		'import/resolver': { },
 	
 		'consistent-return': 'off',
 		'react/jsx-filename-extension': 'off',

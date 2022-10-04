@@ -1,6 +1,6 @@
 function formatTimestamp(timestamp) {
   const eventDate = new Date(timestamp * 1);
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "short",
     month: "short",
     day: "numeric",

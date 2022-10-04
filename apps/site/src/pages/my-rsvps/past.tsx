@@ -1,52 +1,27 @@
 import Dashboard from '../../components/Dashboard'
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import EventCard from '../../components/EventCard'
 import ConnectWallet from '@/components/ConnectWallet'
+import { NextPageWithLayout } from '../_app'
+import { MY_PAST_RSVPS } from '@/gql/queries/my-past-rsvps'
 
-const MY_PAST_RSVPS = gql`
-	query Account($id: String) {
-		account(id: $id) {
-			id
-			rsvps {
-				event {
-					id
-					name
-					eventTimestamp
-					imageURL
-				}
-			}
-		}
-	}
-`
-
-export default function MyPastRSVPs() {
+const MyPastRSVPs: NextPageWithLayout = () => {
 	const { address, isConnected } = useAccount()
 
 	const id = address?.toLowerCase() ?? ''
-	const [currentTimestamp, setEventTimestamp] = useState(new Date().getTime())
+	const [currentTimestamp] = useState(new Date().getTime())
 	const { loading, error, data } = useQuery(MY_PAST_RSVPS, {
 		variables: { id },
 	})
 
-	if (loading)
-		return (
-			<Dashboard page="rsvps" isUpcoming={false}>
-				<p>Loading...</p>
-			</Dashboard>
-		)
-	if (error)
-		return (
-			<Dashboard page="rsvps" isUpcoming={false}>
-				<p>`Error! ${error.message}`</p>
-			</Dashboard>
-		)
+	if (loading) return <p>Loading...</p>
+	if (error) return <p>`Error! ${error.message}`</p>
 	if (data) console.log(data)
 
 	return (
-		<Dashboard page="rsvps" isUpcoming={false}>
+		<>
 			{isConnected ? (
 				<div>
 					{data && !data.account && <p>No past RSVPs found</p>}
@@ -78,6 +53,16 @@ export default function MyPastRSVPs() {
 					<ConnectWallet show="not_connected" />
 				</div>
 			)}
+		</>
+	)
+}
+
+MyPastRSVPs.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<Dashboard page="rsvps" isUpcoming={false}>
+			{page}
 		</Dashboard>
 	)
 }
+
+export default MyPastRSVPs

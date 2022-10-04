@@ -8,9 +8,11 @@ import Alert from '../components/Alert'
 import { useAuth } from '@/hooks/useAuth'
 import ConnectWallet from '@/components/ConnectWallet'
 import { APP_NAME } from '@/utils/consts'
+import useHasMounted from '../hooks/useHasMounted'
 
 export default function CreateEvent() {
 	const { address, isConnected } = useAuth()
+	const mounted = useHasMounted()
 	const [success, setSuccess] = useState(null)
 	const [message, setMessage] = useState(null)
 	const [loading, setLoading] = useState(null)
@@ -18,6 +20,7 @@ export default function CreateEvent() {
 	const [eventName, setEventName] = useState('')
 	const [eventDate, setEventDate] = useState('')
 	const [eventTime, setEventTime] = useState('')
+	const [eventImage, setEventImage] = useState({})
 	const [maxCapacity, setMaxCapacity] = useState('')
 	const [refund, setRefund] = useState('')
 	const [eventLink, setEventLink] = useState('')
@@ -32,11 +35,9 @@ export default function CreateEvent() {
 			link: eventLink,
 			image: getRandomImage(),
 		}
-
 		try {
 			const response = await fetch('/api/store-event-data', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
 			})
 			if (response.status !== 200) {
@@ -81,6 +82,13 @@ export default function CreateEvent() {
 		}
 	}
 
+	// const handleFileUpload = async e => {
+	// 	const file = e.target.files[0]
+	// 	console.log(file)
+	// 	setEventImage(file)
+	// }
+
+	if (!mounted) return null
 	return (
 		<div className="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8">
 			<Head>
@@ -157,6 +165,25 @@ export default function CreateEvent() {
 								</div>
 							</div>
 
+							{/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
+								<label
+									htmlFor="event-image"
+									className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+								>
+									Event Image
+									<p className="max-w-2xl mt-1 text-sm text-gray-400">The image for your event</p>
+								</label>
+								<div className="mt-1 sm:mt-0 sm:col-span-2">
+									<input
+										className="block w-full max-w-lg border border-gray-300 rounded-md shadow-sm cursor-pointer focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+										type="file"
+										id="event-image"
+										name="event-image"
+										required
+										onChange={handleFileUpload}
+									/>
+								</div>
+							</div> */}
 							<div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
 								<label
 									htmlFor="max-capacity"
