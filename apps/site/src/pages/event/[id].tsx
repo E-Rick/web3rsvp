@@ -64,7 +64,7 @@ function Event({ event }) {
 	}
 
 	return (
-		<div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+		<div className="px-4 sm:px-6 lg:px-8">
 			<Head>
 				<title> {event.name} | Cryptopia</title>
 				<meta name="description" content={event.name} />
@@ -86,8 +86,8 @@ function Event({ event }) {
 				</h1>
 				<div className="flex flex-wrap-reverse lg:flex-nowrap">
 					<div className="w-full pr-0 lg:pr-24 xl:pr-32">
-						<div className="w-full mb-8 overflow-hidden bg-gray-100 rounded-lg aspect-w-10 aspect-h-7 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-blue-500">
-							<div className="w-full mb-8 overflow-hidden bg-gray-100 rounded-lg aspect-w-10 aspect-h-7 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-blue-500">
+						<div className="relative w-full overflow-hidden rounded-lg shadow-lg ">
+							<div className="w-full overflow-hidden bg-gray-100 rounded-lg aspect-w-16 aspect-h-16 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-blue-500">
 								{event.imageURL && <Image src={event.imageURL} alt="event image" layout="fill" />}
 							</div>
 						</div>
@@ -105,7 +105,8 @@ function Event({ event }) {
 											<LinkIcon className="w-6 mr-2 text-blue-800" />
 											<a
 												className="text-blue-800 truncate dark:text-blue-200 hover:underline"
-												href={event.link}
+												href={'https://' + event.link}
+												target="_blank"
 											>
 												{event.link}
 											</a>

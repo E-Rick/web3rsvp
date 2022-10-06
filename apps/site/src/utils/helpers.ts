@@ -62,6 +62,7 @@ export const notEmptyOrNil = complement(isEmptyOrNil);
 export const isValidTxHash = test(/^0x([A-Fa-f0-9]{64})$/g);
 
 
+
 export const isAnyTrue = any(Boolean);
 export const isAllTrue = all(Boolean);
 
