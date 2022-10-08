@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import joinClassNames from '@/utils/joinClassNames'
 import { truncateEthAddress } from '@/utils/helpers'
-import { Zorb } from './Zorb'
+import { Zorb } from '../core/Zorb'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function Navmenu() {

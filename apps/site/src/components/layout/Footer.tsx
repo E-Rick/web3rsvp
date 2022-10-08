@@ -1,4 +1,4 @@
-import { AUTHOR_NAME } from '../utils/consts'
+import { AUTHOR_NAME } from '../../utils/consts'
 const Footer = () => (
 	<footer className="border-t-2 border-gray-100">
 		<div className="px-4 py-12 mx-auto max-w-7xl sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
