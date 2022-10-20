@@ -20,6 +20,6 @@
 			"@images/*": ["public/images/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/MediaPicker", "src/components/MediaPicker"],
 	"exclude": ["node_modules"]
 }

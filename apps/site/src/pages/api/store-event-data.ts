@@ -1,9 +1,10 @@
 import { Web3Storage, File } from 'web3.storage'
+import { NextApiResponse, NextApiRequest } from 'next'
 const { resolve } = require('path')
 import formidable from 'formidable'
 
 // create a json file that includes the metadata passed from req.body object
-async function storeEventData(req, res) {
+async function storeEventData(req: NextApiRequest, res: NextApiResponse) {
 	// If unsuccessful, return an error
 	const body = req.body
 	// Store the data in web3 storage and return the cid that points to the IPFS directory of the file
@@ -73,7 +74,7 @@ async function storeFiles(files) {
 }
 
 // create a json file that includes the metadata passed from req.body object
-const handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method === 'POST') {
 		// If unsuccessful, return an error
 		const body = req.body
@@ -88,8 +89,8 @@ const handler = async (req, res) => {
 			// const files = [body.image]
 			console.log('files:', files)
 			files.push(metadataFile)
-			const cid = await client.put(files)
-			return res.status(200).json({ success: true, cid: cid })
+			const rootCid = await client.put(files)
+			return res.status(200).json({ success: true, cid: rootCid })
 		} catch (error) {
 			console.log(error)
 			return res.status(500).json({ error: 'Error creating event', success: false })
