@@ -4,19 +4,16 @@ import joinClassNames from '@/utils/joinClassNames'
 import { truncateEthAddress } from '@/utils/helpers'
 import { Zorb } from '../core/Zorb'
 import { useAuth } from '@/hooks/useAuth'
+import Button from '../core/Button'
+import NextLink from '../core/NextLink'
 
 export default function Navmenu() {
 	const { address, disconnect, displayName } = useAuth()
 	return (
 		<Menu as="div" className="relative z-10 inline-block text-left">
-			<div>
-				<Menu.Button className="inline-flex items-center px-2.5 py-2 rounded-md text-sm font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/10 w-32 cursor-pointer">
-					<Zorb size={24} address={address} />
-					<span className="pl-1 overflow-hidden text-black dark:text-white/90">
-						{truncateEthAddress(displayName)}
-					</span>
-				</Menu.Button>
-			</div>
+			<Menu.Button as={Button} variant="transparent" icon={<Zorb size={24} address={address} />}>
+				{truncateEthAddress(address)}
+			</Menu.Button>
 			<Transition
 				as={Fragment}
 				enter="transition ease-out duration-100"
@@ -30,7 +27,7 @@ export default function Navmenu() {
 					<div className="py-1">
 						<Menu.Item>
 							{({ active }) => (
-								<a
+								<NextLink
 									href={`/create-event`}
 									className={joinClassNames(
 										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -38,12 +35,12 @@ export default function Navmenu() {
 									)}
 								>
 									Create event
-								</a>
+								</NextLink>
 							)}
 						</Menu.Item>
 						<Menu.Item>
 							{({ active }) => (
-								<a
+								<NextLink
 									href={`/my-rsvps/upcoming`}
 									className={joinClassNames(
 										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -51,12 +48,12 @@ export default function Navmenu() {
 									)}
 								>
 									My RSVPs
-								</a>
+								</NextLink>
 							)}
 						</Menu.Item>
 						<Menu.Item>
 							{({ active }) => (
-								<a
+								<NextLink
 									href={`/my-events/upcoming`}
 									className={joinClassNames(
 										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -64,20 +61,21 @@ export default function Navmenu() {
 									)}
 								>
 									My Events
-								</a>
+								</NextLink>
 							)}
 						</Menu.Item>
 						<Menu.Item>
 							{({ active }) => (
-								<a
+								<NextLink
+									href={`/`}
 									onClick={() => disconnect()}
 									className={joinClassNames(
-										address ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
 										'block px-4 py-2 text-sm cursor-pointer'
 									)}
 								>
 									Log Out
-								</a>
+								</NextLink>
 							)}
 						</Menu.Item>
 					</div>
