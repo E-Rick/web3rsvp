@@ -2,8 +2,10 @@ import React, { ReactNode } from 'react'
 import NextLink from 'next/link'
 
 type LinkProps = {
-	href: string
+	href?: string
 	children: ReactNode
+	className?: string
+	onClick?: () => void
 }
 
 // Abstraction over NextLink
