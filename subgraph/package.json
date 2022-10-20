@@ -1,5 +1,5 @@
 {
-  "name": "web3rsvp",
+  "name": "cryptopia",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
