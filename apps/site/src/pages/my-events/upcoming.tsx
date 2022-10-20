@@ -1,9 +1,15 @@
 import Dashboard from '../../components/Dashboard'
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import EventCard from '../../components/EventCard'
+import type { NextPageWithLayout } from './_app'
 import { useAuth } from '@/hooks/useAuth'
+import Head from 'next/head'
+import DashboardNav from '@/components/DashboardNav'
+import { ConnectWallet } from '@/components/ConnectWallet'
+import EmptyState from '@/components/EmptyState'
+import EventCardGrid from '@/components/EventCardGrid'
 
 const MY_UPCOMING_EVENTS = gql`
 	query Events($eventOwner: String, $currentTimestamp: String) {
@@ -19,7 +25,7 @@ const MY_UPCOMING_EVENTS = gql`
 		}
 	}
 `
-export default function MyUpcomingEvents() {
+const MyUpcomingEvents: NextPageWithLayout = () => {
 	const { address } = useAuth()
 
 	const eventOwner = address ? address.toLowerCase() : ''
@@ -28,48 +34,47 @@ export default function MyUpcomingEvents() {
 		variables: { eventOwner, currentTimestamp },
 	})
 
-	if (loading)
-		return (
-			<Dashboard page="events" isUpcoming={true}>
-				<p>Loading...</p>
-			</Dashboard>
-		)
-	if (error)
-		return (
-			<Dashboard page="events" isUpcoming={true}>
-				<p>`Error! ${error.message}`</p>
-			</Dashboard>
-		)
+	// if (loading)
+	// 	return (
+	// 		<Dashboard page="events" isUpcoming={true}>
+	// 			<p>Loading...</p>
+	// 		</Dashboard>
+	// 	)
+	// if (error)
+	// 	return (
+	// 		<Dashboard page="events" isUpcoming={true}>
+	// 			<p>`Error! ${error.message}`</p>
+	// 		</Dashboard>
+	// 	)
 
 	return (
-		<Dashboard page="events" isUpcoming={true}>
-			{address ? (
-				<div>
-					{data && data.events.length == 0 && <p>No upcoming events found</p>}
-					{data && data.events.length > 0 && (
-						<ul
-							role="list"
-							className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
-						>
-							{data.events.map(event => (
-								<li key={event.id}>
-									<EventCard
-										id={event.id}
-										name={event.name}
-										eventTimestamp={event.eventTimestamp}
-										imageURL={event.imageURL}
-									/>
-								</li>
-							))}
-						</ul>
-					)}
-				</div>
-			) : (
-				<div className="flex flex-col items-center py-8">
-					<p className="mb-4">Please connect your wallet to view your events</p>
-					<ConnectButton />
-				</div>
-			)}
-		</Dashboard>
+		<>
+			<>
+				{address ? (
+					<div>
+						{data && data.events.length == 0 && <EmptyState heading="No upcoming events found" />}
+						{data && data.events.length > 0 && <EventCardGrid events={data.events} />}
+					</div>
+				) : (
+					<EmptyState heading="Please connect your wallet to view your events" actions={<ConnectWallet />} />
+				)}
+			</>
+		</>
 	)
 }
+
+MyUpcomingEvents.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<>
+			<Head>
+				<title>My Upcoming Events | Cryptopia</title>
+				<meta name="description" content="Manage your events and RSVPs" />
+			</Head>
+			<Dashboard page="events" isUpcoming={true}>
+				{page}
+			</Dashboard>
+		</>
+	)
+}
+
+export default MyUpcomingEvents

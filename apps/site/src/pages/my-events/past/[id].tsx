@@ -1,15 +1,16 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useState, ReactElement } from 'react'
 import { gql } from '@apollo/client'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAuth } from '@/hooks/useAuth'
 import client from '@/apollo-client'
-import Alert from '@/components/Alert'
-import DashboardNav from '@/components/DashboardNav'
+import Alert from '@/components/core/Alert'
 import { connectContract } from '@/utils/connectContract'
 import formatTimestamp from '@/utils/formatTimestamp'
 import useHasMounted from '../../../hooks/useHasMounted'
+import Dashboard from '@/components/Dashboard'
+import NextLinks from '@/components/core/NextLink'
+import { Zorb } from '@/components/core/Zorb'
 
 function PastEvent({ event }) {
 	const { address, isConnected } = useAuth()
@@ -82,6 +83,7 @@ function PastEvent({ event }) {
 	function checkIfConfirmed(event, address) {
 		for (let i = 0; i < event.confirmedAttendees.length; i++) {
 			let confirmedAddress = event.confirmedAttendees[i].attendee.id
+			console.log('confirmedAddress', confirmedAddress)
 			if (confirmedAddress.toLowerCase() == address.toLowerCase()) {
 				return true
 			}
@@ -95,13 +97,8 @@ function PastEvent({ event }) {
 
 	return (
 		<>
-			<Head>
-				<title>My Dashboard | Cryptopia</title>
-				<meta name="description" content="Manage your events and RSVPs" />
-			</Head>
-			<DashboardNav page={'events'} />
-			<div className="flex flex-wrap py-8">
-				<div className="sm:w-10/12 sm:pl-8">
+			<div className="flex flex-wrap w-full py-4">
+				<div className="w-full sm:w-10/12 sm:pl-8">
 					{loading && (
 						<Alert alertType={'loading'} alertBody={'Please wait'} triggerAlert={true} color={'white'} />
 					)}
@@ -114,9 +111,9 @@ function PastEvent({ event }) {
 					{isConnected ? (
 						address.toLowerCase() === event.eventOwner.toLowerCase() ? (
 							<section>
-								<Link href="/my-events/past">
+								<NextLinks href="/my-events/past">
 									<a className="text-sm text-amber-800 hover:underline">&#8592; Back</a>
-								</Link>
+								</NextLinks>
 								<h6 className="mt-4 mb-2 text-sm">{formatTimestamp(event.eventTimestamp)}</h6>
 								<h1 className="mb-8 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl md:text-4xl">
 									{event.name}
@@ -147,8 +144,9 @@ function PastEvent({ event }) {
 												<tbody className="bg-white divide-y divide-gray-200">
 													{event.rsvps.map(rsvp => (
 														<tr key={rsvp.attendee.id}>
-															<td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-																{rsvp.attendee.id}
+															<td className="flex items-center py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
+																<Zorb address={rsvp.attendee.id} size={24} />
+																<span className="ml-2">{rsvp.attendee.id}</span>
 															</td>
 															<td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
 																{checkIfConfirmed(event, rsvp.attendee.id) ? (
@@ -185,7 +183,22 @@ function PastEvent({ event }) {
 	)
 }
 
+PastEvent.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<>
+			<Head>
+				<title>My Dashboard | Cryptopia</title>
+				<meta name="description" content="Manage your events and RSVPs" />
+			</Head>
+			<Dashboard page="events" isUpcoming={false}>
+				{page}
+			</Dashboard>
+		</>
+	)
+}
+
 export default PastEvent
+
 export async function getServerSideProps(context) {
 	const { id } = context.params
 

@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { EmojiHappyIcon, TicketIcon, UsersIcon, LinkIcon } from '@heroicons/react/outline'
+import { TicketIcon, UsersIcon, LinkIcon } from '@heroicons/react/outline'
 
 import Image from 'next/image'
 
@@ -7,13 +7,14 @@ import { gql } from '@apollo/client'
 
 import { useState } from 'react'
 import { ethers } from 'ethers'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import client from '@/apollo-client'
-import Alert from '@/components/Alert'
+import Alert from '@/components/core/Alert'
 import { connectContract } from '@/utils/connectContract'
 import formatTimestamp from '@/utils/formatTimestamp'
-import NextLinks from '@/components/NextLink'
+import ConnectWallet from '@/components/ConnectWallet'
+import { Zorb } from '@/components/core/Zorb'
+import { truncateEthAddress } from '../../utils/helpers'
 
 function Event({ event }) {
 	console.log('EVENT:', event)
@@ -64,13 +65,14 @@ function Event({ event }) {
 	}
 
 	return (
-		<div className="px-4 sm:px-6 lg:px-8">
+		<div className="w-full px-4 sm:px-6 lg:px-8">
 			<Head>
 				<title> {event.name} | Cryptopia</title>
 				<meta name="description" content={event.name} />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<section className="relative py-12">
+			<section className="py-12">
+				{/* Alerts */}
 				{loading && (
 					<Alert alertType={'loading'} alertBody={'Please wait'} triggerAlert={true} color={'white'} />
 				)}
@@ -80,20 +82,21 @@ function Event({ event }) {
 				{success === false && (
 					<Alert alertType={'failed'} alertBody={message} triggerAlert={true} color={'palevioletred'} />
 				)}
-				<h6 className="mb-2">{formatTimestamp(event.eventTimestamp)}</h6>
+				{/* Event Information */}
+				<h6 className="mb-2 text-gray-500">{formatTimestamp(event.eventTimestamp)}</h6>
 				<h1 className="mb-6 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:mb-12">
 					{event.name}
 				</h1>
-				<div className="flex flex-wrap-reverse lg:flex-nowrap">
-					<div className="w-full pr-0 lg:pr-24 xl:pr-32">
+				<div className="flex flex-wrap-reverse w-full lg:flex-nowrap">
+					<div className="flex flex-col flex-1 flex-grow w-full gap-4 pr-0 lg:pr-24 xl:pr-32">
 						<div className="relative w-full overflow-hidden rounded-lg shadow-lg ">
-							<div className="w-full overflow-hidden bg-gray-100 rounded-lg aspect-w-16 aspect-h-16 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-blue-500">
+							<div className="w-full overflow-hidden bg-gray-100 rounded-lg aspect-w-16 aspect-h-16 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-amber-500">
 								{event.imageURL && <Image src={event.imageURL} alt="event image" layout="fill" />}
 							</div>
 						</div>
 						<p>{event.description}</p>
 					</div>
-					<div className="flex flex-col w-full max-w-xs gap-4 mb-6 lg:mb-0">
+					<div className="flex flex-col max-w-xs gap-4 mb-6 lg:mb-0">
 						{event.eventTimestamp > currentTimestamp ? (
 							address ? (
 								checkIfAlreadyRSVPed() ? (
@@ -122,7 +125,7 @@ function Event({ event }) {
 									</button>
 								)
 							) : (
-								<ConnectButton />
+								<ConnectWallet />
 							)
 						) : (
 							<span className="w-full px-6 py-3 text-base font-medium text-center border-2 border-gray-200 rounded-full">
@@ -132,15 +135,16 @@ function Event({ event }) {
 						<div className="flex item-center">
 							<UsersIcon className="w-6 mr-2" />
 							<span className="truncate">
-								`{event.totalRSVPs}/{event.maxCapacity} attending`
+								{event.totalRSVPs}/{event.maxCapacity} attending
 							</span>
 						</div>
 						<div className="flex item-center">
 							<TicketIcon className="w-6 mr-2" />
 							<span className="truncate">1 RSVP per wallet</span>
 						</div>
-						<div className="flex items-center">
-							<EmojiHappyIcon className="w-10 mr-2" />
+						<div className="flex items-center gap-2">
+							{/* <EmojiHappyIcon className="w-10 mr-2" /> */}
+							<Zorb address={event.eventOwner} size={32} />
 							<span className="truncate">
 								Hosted by{' '}
 								<a
@@ -149,7 +153,7 @@ function Event({ event }) {
 									target="_blank"
 									rel="noreferrer"
 								>
-									{event.eventOwner}
+									<span>{truncateEthAddress(event.eventOwner)}</span>
 								</a>
 							</span>
 						</div>

@@ -1,27 +1,15 @@
 import Dashboard from '../../../components/Dashboard'
-import { useState } from 'react'
-import Link from 'next/link'
-import { gql, useQuery } from '@apollo/client'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import EventCard from '../../../components/EventCard'
+import { ReactElement, useState } from 'react'
+import { useQuery } from '@apollo/client'
 import { useAuth } from '@/hooks/useAuth'
+import type { NextPageWithLayout } from '@/pages/_app'
+import Head from 'next/head'
+import { MY_PAST_EVENTS } from '@/gql/queries/my-past-events'
+import EmptyState from '@/components/EmptyState'
+import ConnectWallet from '@/components/ConnectWallet'
+import EventCardGrid from '@/components/EventCardGrid'
 
-const MY_PAST_EVENTS = gql`
-	query Events($eventOwner: String, $currentTimestamp: String) {
-		events(where: { eventOwner: $eventOwner, eventTimestamp_lt: $currentTimestamp }) {
-			id
-			eventID
-			name
-			description
-			eventTimestamp
-			maxCapacity
-			totalRSVPs
-			imageURL
-		}
-	}
-`
-
-export default function MyPastEvents() {
+const MyPastEvents: NextPageWithLayout = () => {
 	const { address } = useAuth()
 
 	const eventOwner = address ? address.toLowerCase() : ''
@@ -30,53 +18,44 @@ export default function MyPastEvents() {
 		variables: { eventOwner, currentTimestamp },
 	})
 
-	if (loading)
-		return (
-			<Dashboard page="events" isUpcoming={false}>
-				<p>Loading...</p>
-			</Dashboard>
-		)
-	if (error)
-		return (
-			<Dashboard page="events" isUpcoming={false}>
-				<p>`Error! ${error.message}`</p>
-			</Dashboard>
-		)
+	// if (loading)
+	// 	return (
+	// 		<Dashboard page="events" isUpcoming={false}>
+	// 			<p>Loading...</p>
+	// 		</Dashboard>
+	// 	)
+	// if (error)
+	// 	return (
+	// 		<Dashboard page="events" isUpcoming={false}>
+	// 			<p>`Error! ${error.message}`</p>
+	// 		</Dashboard>
+	// 	)
 
 	return (
-		<Dashboard page="events" isUpcoming={false}>
+		<>
 			{address ? (
 				<div>
-					{data && data.events.length == 0 && <p>No past events found</p>}
-					{data && data.events.length > 0 && (
-						<ul
-							role="list"
-							className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
-						>
-							{data.events.map(event => (
-								<li key={event.id}>
-									<EventCard
-										id={event.id}
-										name={event.name}
-										eventTimestamp={event.eventTimestamp}
-										imageURL={event.imageURL}
-									/>
-									<Link href={`/my-events/past/${event.id}`}>
-										<a className="text-sm truncate text-amber-800 hover:underline">
-											Confirm attendees
-										</a>
-									</Link>
-								</li>
-							))}
-						</ul>
-					)}
+					{data && data.events.length == 0 && <EmptyState heading="No past events found" />}
+					{data && data.events.length > 0 && <EventCardGrid events={data.events} confirmAttendees />}
 				</div>
 			) : (
-				<div className="flex flex-col items-center py-8">
-					<p className="mb-4">Please connect your wallet to view your events</p>
-					<ConnectButton />
-				</div>
+				<EmptyState heading="Please connect your wallet to view your events" actions={<ConnectWallet />} />
 			)}
-		</Dashboard>
+		</>
 	)
 }
+MyPastEvents.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<>
+			<Head>
+				<title>My Upcoming Events | Cryptopia</title>
+				<meta name="description" content="Manage your events and RSVPs" />
+			</Head>
+			<Dashboard page="events" isUpcoming={false}>
+				{page}
+			</Dashboard>
+		</>
+	)
+}
+
+export default MyPastEvents

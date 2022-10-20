@@ -1,12 +1,12 @@
 import Dashboard from '../../components/Dashboard'
 import { ReactElement, useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useQuery } from '@apollo/client'
 import { useAccount } from 'wagmi'
 import EventCard from '../../components/EventCard'
 import ConnectWallet from '@/components/ConnectWallet'
 import { NextPageWithLayout } from '../_app'
 import { MY_UPCOMING_RSVPS } from '@/gql/queries/my-upcoming-rsvps'
+import EmptyState from '@/components/EmptyState'
 
 const MyUpcomingRSVPs: NextPageWithLayout = () => {
 	const { address } = useAccount()
@@ -48,10 +48,7 @@ const MyUpcomingRSVPs: NextPageWithLayout = () => {
 					)}
 				</div>
 			) : (
-				<div className="flex flex-col items-center py-8 ">
-					<p className="mb-4">Please connect your wallet to view your rsvps</p>
-					<ConnectWallet show="not_connected" />
-				</div>
+				<EmptyState heading="Please connect your wallet to view your RSVPs" actions={<ConnectWallet />} />
 			)}
 		</>
 	)
