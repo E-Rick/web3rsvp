@@ -1,9 +1,17 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import joinClassNames from '../utils/joinClassNames'
+import NextLinks from './core/NextLink'
 import DashboardNav from './DashboardNav'
 
-export default function Dashboard({ page, isUpcoming, children }) {
+interface DashboardProps {
+	page: string
+	isUpcoming?: boolean
+	children: React.ReactNode
+}
+
+export default function Dashboard(props: DashboardProps) {
+	const { page, isUpcoming = false, children } = props
 	const router = useRouter()
 
 	const handleChange = e => {
@@ -32,7 +40,7 @@ export default function Dashboard({ page, isUpcoming, children }) {
 				<title>My Dashboard | Cryptopia</title>
 				<meta name="description" content="Manage your events and RSVPs" />
 			</Head>
-			<div className="flex flex-wrap py-8">
+			<div className="flex flex-wrap w-full py-8">
 				<DashboardNav page={page} />
 				<div className="sm:w-10/12 sm:pl-8">
 					<h1 className="mb-4 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl md:text-4xl">
@@ -58,7 +66,7 @@ export default function Dashboard({ page, isUpcoming, children }) {
 						<div className="border-b border-gray-200">
 							<nav className="flex -mb-px space-x-8" aria-label="Tabs">
 								{tabs.map(tab => (
-									<a
+									<NextLinks
 										key={tab.name}
 										href={tab.href}
 										className={joinClassNames(
@@ -70,7 +78,7 @@ export default function Dashboard({ page, isUpcoming, children }) {
 										aria-current={tab.current ? 'page' : undefined}
 									>
 										{tab.name}
-									</a>
+									</NextLinks>
 								))}
 							</nav>
 						</div>

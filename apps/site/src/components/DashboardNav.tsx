@@ -1,4 +1,5 @@
 import joinClassNames from '../utils/joinClassNames'
+import NextLinks from '@/components/core/NextLink'
 
 export default function DashboardNav({ page }) {
 	let navigation = [
@@ -17,7 +18,7 @@ export default function DashboardNav({ page }) {
 	return (
 		<nav className="mb-8 space-y-1 w-60 sm:w-2/12" aria-label="Sidebar">
 			{navigation.map(item => (
-				<a
+				<NextLinks
 					key={item.name}
 					href={item.href}
 					className={joinClassNames(
@@ -29,7 +30,7 @@ export default function DashboardNav({ page }) {
 					aria-current={item.current ? 'page' : undefined}
 				>
 					<span className="truncate">{item.name}</span>
-				</a>
+				</NextLinks>
 			))}
 		</nav>
 	)
