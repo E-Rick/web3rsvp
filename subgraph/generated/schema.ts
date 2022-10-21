@@ -218,6 +218,15 @@ export class Event extends Entity {
       );
     }
   }
+
+  get isAllAttendeesConfirmed(): boolean {
+    let value = this.get("isAllAttendeesConfirmed");
+    return value!.toBoolean();
+  }
+
+  set isAllAttendeesConfirmed(value: boolean) {
+    this.set("isAllAttendeesConfirmed", Value.fromBoolean(value));
+  }
 }
 
 export class Account extends Entity {
