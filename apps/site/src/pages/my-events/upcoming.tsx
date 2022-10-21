@@ -1,30 +1,14 @@
-import Dashboard from '../../components/Dashboard'
 import { ReactElement, useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import EventCard from '../../components/EventCard'
-import type { NextPageWithLayout } from './_app'
 import { useAuth } from '@/hooks/useAuth'
 import Head from 'next/head'
-import DashboardNav from '@/components/DashboardNav'
-import { ConnectWallet } from '@/components/ConnectWallet'
+import { ConnectWallet } from '@/components/core/ConnectWallet'
 import EmptyState from '@/components/EmptyState'
 import EventCardGrid from '@/components/EventCardGrid'
+import type { NextPageWithLayout } from '../_app'
+import { MY_UPCOMING_EVENTS } from '@/gql/queries/my-upcoming-events'
+import Dashboard from '@/components/layouts/DashboardLayout'
 
-const MY_UPCOMING_EVENTS = gql`
-	query Events($eventOwner: String, $currentTimestamp: String) {
-		events(where: { eventOwner: $eventOwner, eventTimestamp_gt: $currentTimestamp }) {
-			id
-			eventID
-			name
-			description
-			eventTimestamp
-			maxCapacity
-			totalRSVPs
-			imageURL
-		}
-	}
-`
 const MyUpcomingEvents: NextPageWithLayout = () => {
 	const { address } = useAuth()
 

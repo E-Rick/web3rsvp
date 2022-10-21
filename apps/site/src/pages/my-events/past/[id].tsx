@@ -1,20 +1,24 @@
 import Head from 'next/head'
 import { useState, ReactElement } from 'react'
 import { gql } from '@apollo/client'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAuth } from '@/hooks/useAuth'
 import client from '@/apollo-client'
 import Alert from '@/components/core/Alert'
 import { connectContract } from '@/utils/connectContract'
 import formatTimestamp from '@/utils/formatTimestamp'
 import useHasMounted from '../../../hooks/useHasMounted'
-import Dashboard from '@/components/Dashboard'
 import NextLinks from '@/components/core/NextLink'
 import Account from '@/components/core/Account'
+import EmptyState from '@/components/EmptyState'
+import ConnectWallet from '@/components/core/ConnectWallet'
+import Dashboard from '@/components/layouts/DashboardLayout'
+import type { NextPageWithLayout } from '../../_app'
+import { InferGetServerSidePropsType } from 'next'
 
-function PastEvent({ event }) {
+const PastEvent: NextPageWithLayout = ({ event }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const { address, isConnected } = useAuth()
 	const mounted = useHasMounted()
+	const [isAllConfirmed, setIsAllConfirmed] = useState(false)
 	const [success, setSuccess] = useState(null)
 	const [message, setMessage] = useState(null)
 	const [loading, setLoading] = useState(null)
@@ -84,7 +88,7 @@ function PastEvent({ event }) {
 		for (let i = 0; i < event.confirmedAttendees.length; i++) {
 			let confirmedAddress = event.confirmedAttendees[i].attendee.id
 			console.log('confirmedAddress', confirmedAddress)
-			if (confirmedAddress.toLowerCase() == address.toLowerCase()) {
+			if (confirmedAddress.toLowerCase() === address.toLowerCase()) {
 				return true
 			}
 		}
@@ -133,7 +137,7 @@ function PastEvent({ event }) {
 														<th scope="col" className="text-right py-3.5 pl-3 pr-4 sm:pr-6">
 															<button
 																type="button"
-																className="items-center px-4 py-2 text-sm font-medium border border-transparent rounded-full text-amber-700 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+																className="items-center px-4 py-2 text-sm font-medium border border-transparent rounded-full text-amber-800 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
 																onClick={confirmAllAttendees}
 															>
 																Confirm All
@@ -155,7 +159,7 @@ function PastEvent({ event }) {
 																) : (
 																	<button
 																		type="button"
-																		className="text-amber-600 hover:text-amber-900"
+																		className="text-amber-800 hover:text-amber-900"
 																		onClick={() =>
 																			confirmAttendee(rsvp.attendee.id)
 																		}
@@ -176,7 +180,7 @@ function PastEvent({ event }) {
 							<p>You do not have permission to manage this event.</p>
 						)
 					) : (
-						<ConnectButton />
+						<EmptyState heading="Connect your wallet to view this event" actions={<ConnectWallet />} />
 					)}
 				</div>
 			</div>

@@ -41,19 +41,6 @@ export default function Navmenu() {
 						<Menu.Item>
 							{({ active }) => (
 								<NextLink
-									href={`/my-rsvps/upcoming`}
-									className={joinClassNames(
-										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-										'block px-4 py-2 text-sm'
-									)}
-								>
-									My RSVPs
-								</NextLink>
-							)}
-						</Menu.Item>
-						<Menu.Item>
-							{({ active }) => (
-								<NextLink
 									href={`/my-events/upcoming`}
 									className={joinClassNames(
 										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -64,6 +51,20 @@ export default function Navmenu() {
 								</NextLink>
 							)}
 						</Menu.Item>
+						<Menu.Item>
+							{({ active }) => (
+								<NextLink
+									href={`/my-rsvps/upcoming`}
+									className={joinClassNames(
+										active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+										'block px-4 py-2 text-sm'
+									)}
+								>
+									My RSVPs
+								</NextLink>
+							)}
+						</Menu.Item>
+
 						<Menu.Item>
 							{({ active }) => (
 								<NextLink

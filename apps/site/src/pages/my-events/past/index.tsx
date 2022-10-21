@@ -1,4 +1,4 @@
-import Dashboard from '../../../components/Dashboard'
+import Dashboard from '../../../components/layouts/DashboardLayout'
 import { ReactElement, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useAuth } from '@/hooks/useAuth'
@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from '@/pages/_app'
 import Head from 'next/head'
 import { MY_PAST_EVENTS } from '@/gql/queries/my-past-events'
 import EmptyState from '@/components/EmptyState'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/components/core/ConnectWallet'
 import EventCardGrid from '@/components/EventCardGrid'
 
 const MyPastEvents: NextPageWithLayout = () => {
@@ -44,6 +44,7 @@ const MyPastEvents: NextPageWithLayout = () => {
 		</>
 	)
 }
+
 MyPastEvents.getLayout = function getLayout(page: ReactElement) {
 	return (
 		<>

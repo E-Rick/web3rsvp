@@ -12,7 +12,7 @@ import client from '@/apollo-client'
 import Alert from '@/components/core/Alert'
 import { connectContract } from '@/utils/connectContract'
 import formatTimestamp from '@/utils/formatTimestamp'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/components/core/ConnectWallet'
 import { Zorb } from '@/components/core/Zorb'
 import { truncateEthAddress } from '../../utils/helpers'
 

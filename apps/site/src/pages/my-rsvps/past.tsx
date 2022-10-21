@@ -1,12 +1,12 @@
-import Dashboard from '../../components/Dashboard'
 import { ReactElement, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useAccount } from 'wagmi'
 import EventCard from '../../components/EventCard'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/components/core/ConnectWallet'
 import { NextPageWithLayout } from '../_app'
 import { MY_PAST_RSVPS } from '@/gql/queries/my-past-rsvps'
 import EmptyState from '@/components/EmptyState'
+import Dashboard from '@/components/layouts/DashboardLayout'
 
 const MyPastRSVPs: NextPageWithLayout = () => {
 	const { address, isConnected } = useAccount()

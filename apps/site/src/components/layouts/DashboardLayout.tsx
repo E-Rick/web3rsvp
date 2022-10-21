@@ -1,16 +1,16 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import joinClassNames from '../utils/joinClassNames'
-import NextLinks from './core/NextLink'
+import joinClassNames from '../../utils/joinClassNames'
+import NextLinks from '../core/NextLink'
 import DashboardNav from './DashboardNav'
 
-interface DashboardProps {
+interface DashboardLayoutProps {
 	page: string
 	isUpcoming?: boolean
 	children: React.ReactNode
 }
 
-export default function Dashboard(props: DashboardProps) {
+export default function DashboardLayout(props: DashboardLayoutProps) {
 	const { page, isUpcoming = false, children } = props
 	const router = useRouter()
 
@@ -40,29 +40,14 @@ export default function Dashboard(props: DashboardProps) {
 				<title>My Dashboard | Cryptopia</title>
 				<meta name="description" content="Manage your events and RSVPs" />
 			</Head>
-			<div className="flex flex-wrap w-full py-8">
-				<DashboardNav page={page} />
-				<div className="sm:w-10/12 sm:pl-8">
+			<DashboardNav page={page} />
+			<div className="flex flex-col flex-wrap w-full px-4 py-8 overflow-y-auto">
+				<div className=" sm:w-10/12">
 					<h1 className="mb-4 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl md:text-4xl">
 						{page == 'events' ? 'My Events' : 'My RSVPs'}
 					</h1>
-					<div className="sm:hidden">
-						<label htmlFor="tabs" className="sr-only">
-							Select a tab
-						</label>
-						<select
-							id="tabs"
-							name="tabs"
-							className="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
-							defaultValue={tabs.find(tab => tab.current).name}
-							onChange={handleChange}
-						>
-							{tabs.map(tab => (
-								<option key={tab.name}>{tab.name}</option>
-							))}
-						</select>
-					</div>
-					<div className="hidden sm:block">
+
+					<div className="">
 						<div className="border-b border-gray-200">
 							<nav className="flex -mb-px space-x-8" aria-label="Tabs">
 								{tabs.map(tab => (
@@ -71,7 +56,7 @@ export default function Dashboard(props: DashboardProps) {
 										href={tab.href}
 										className={joinClassNames(
 											tab.current
-												? 'border-orange-500 text-orange-600'
+												? 'border-amber-500 text-amber-600'
 												: 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
 											'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
 										)}
@@ -83,7 +68,7 @@ export default function Dashboard(props: DashboardProps) {
 							</nav>
 						</div>
 					</div>
-					<section className="py-8">{children}</section>
+					<section className="w-full py-8 overflow-y-auto">{children}</section>
 				</div>
 			</div>
 		</>
