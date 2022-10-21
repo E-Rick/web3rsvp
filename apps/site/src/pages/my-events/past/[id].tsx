@@ -10,7 +10,7 @@ import formatTimestamp from '@/utils/formatTimestamp'
 import useHasMounted from '../../../hooks/useHasMounted'
 import Dashboard from '@/components/Dashboard'
 import NextLinks from '@/components/core/NextLink'
-import { Zorb } from '@/components/core/Zorb'
+import Account from '@/components/core/Account'
 
 function PastEvent({ event }) {
 	const { address, isConnected } = useAuth()
@@ -80,7 +80,7 @@ function PastEvent({ event }) {
 		}
 	}
 
-	function checkIfConfirmed(event, address) {
+	function checkIfConfirmed(event, address): boolean {
 		for (let i = 0; i < event.confirmedAttendees.length; i++) {
 			let confirmedAddress = event.confirmedAttendees[i].attendee.id
 			console.log('confirmedAddress', confirmedAddress)
@@ -145,12 +145,13 @@ function PastEvent({ event }) {
 													{event.rsvps.map(rsvp => (
 														<tr key={rsvp.attendee.id}>
 															<td className="flex items-center py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-																<Zorb address={rsvp.attendee.id} size={24} />
-																<span className="ml-2">{rsvp.attendee.id}</span>
+																<Account address={rsvp.attendee.id} copyable />
 															</td>
 															<td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
 																{checkIfConfirmed(event, rsvp.attendee.id) ? (
-																	<p>Confirmed</p>
+																	<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+																		Confirmed
+																	</span>
 																) : (
 																	<button
 																		type="button"
