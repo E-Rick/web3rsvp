@@ -9,6 +9,7 @@ interface EventCardGridProps {
 
 const EventCardGrid = (props: EventCardGridProps) => {
 	const { events, confirmAttendees = false } = props
+
 	return (
 		<ul
 			role="list"
