@@ -3,7 +3,7 @@ import Head from 'next/head'
 const Landing = ({ children }) => (
 	<div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
 		<Head>
-			<title>web3rsvp</title>
+			<title>Cryptopia</title>
 			<meta name="description" content="Find, join, and create virtual events with your web3 frens" />
 		</Head>
 		<section className="py-12">
