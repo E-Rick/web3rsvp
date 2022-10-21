@@ -41,7 +41,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
 				<meta name="description" content="Manage your events and RSVPs" />
 			</Head>
 			<DashboardNav page={page} />
-			<div className="flex flex-col flex-wrap w-full px-4 py-8 overflow-y-auto">
+			<div className="flex flex-col flex-wrap w-full px-4 py-8 overflow-y-scroll">
 				<div className=" sm:w-10/12">
 					<h1 className="mb-4 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl md:text-4xl">
 						{page == 'events' ? 'My Events' : 'My RSVPs'}
@@ -68,7 +68,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
 							</nav>
 						</div>
 					</div>
-					<section className="w-full py-8 overflow-y-auto">{children}</section>
+					<section className="w-full py-8">{children}</section>
 				</div>
 			</div>
 		</>
