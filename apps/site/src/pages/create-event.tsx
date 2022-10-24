@@ -1,20 +1,18 @@
-import { useState, useEffect } from 'react'
+import Button from '@/components/core/Button'
+import ConnectWallet from '@/components/core/ConnectWallet'
+import Input from '@/components/core/Input'
+import NextLinks from '@/components/core/NextLink'
+import { useAuth } from '@/hooks/useAuth'
+import { APP_NAME } from '@/utils/consts'
+import formatTimestamp from '@/utils/formatTimestamp'
+import { ethers } from 'ethers'
 import Head from 'next/head'
 import Link from 'next/link'
-import getRandomImage from '../utils/getRandomImage'
-import { ethers } from 'ethers'
-import { connectContract } from '../utils/connectContract'
+import Image from 'next/image'
 import Alert from '../components/core/Alert'
-import { useAuth } from '@/hooks/useAuth'
-import ConnectWallet from '@/components/ConnectWallet'
-import { APP_NAME } from '@/utils/consts'
 import useHasMounted from '../hooks/useHasMounted'
-import { Media } from '@/components/MediaPicker/Media'
-import Input from '@/components/core/Input'
-import formatTimestamp from '@/utils/formatTimestamp'
-import NextLinks from '@/components/core/NextLink'
-import Button from '@/components/core/Button'
-
+import { connectContract } from '../utils/connectContract'
+import { ChangeEvent, MouseEvent, useState } from 'react'
 export default function CreateEvent() {
 	const { address, isConnected } = useAuth()
 	const mounted = useHasMounted()
@@ -27,10 +25,12 @@ export default function CreateEvent() {
 	const [eventTime, setEventTime] = useState('')
 	const [eventImage, setEventImage] = useState({})
 	const [maxCapacity, setMaxCapacity] = useState('')
-	const [description, setDescription] = useState('')
+	const [cid, setCID] = useState('')
 	const [refund, setRefund] = useState('')
 	const [eventLink, setEventLink] = useState('')
 	const [eventDescription, setEventDescription] = useState('')
+	const [file, setFile] = useState<File | null>(null)
+	const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
 	let eventDateAndTime = new Date(`${eventDate} ${eventTime}`)
 	let eventTimestamp = eventDateAndTime.getTime()
@@ -42,20 +42,24 @@ export default function CreateEvent() {
 			name: eventName,
 			description: eventDescription,
 			link: eventLink,
-			image: getRandomImage(),
+			image: cid,
 		}
 		try {
+			console.log('body submitting', body)
 			const response = await fetch('/api/store-event-data', {
 				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
 				body: JSON.stringify(body),
 			})
 			if (response.status !== 200) {
 				alert('Oops! Something went wrong. Please refresh and try again.')
 			} else {
 				console.log('Form successfully submitted!')
-				let responseJSON = await response.json()
-
-				// await createEvent(responseJSON.cid)
+				let { data } = await response.json()
+				console.log('responseJSON', data)
+				await createEvent(data.cid)
 			}
 			// check response, if success is false, dont take them to success page
 		} catch (error) {
@@ -66,13 +70,16 @@ export default function CreateEvent() {
 	const createEvent = async cid => {
 		try {
 			const rsvpContract = connectContract()
-
+			console.log(rsvpContract)
 			if (rsvpContract) {
 				let deposit = ethers.utils.parseEther(refund)
 				let eventDateAndTime = new Date(`${eventDate} ${eventTime}`)
 				let eventTimestamp = eventDateAndTime.getTime()
 				let eventDataCID = cid
-
+				console.log('eventDataCID', eventDataCID)
+				console.log('eventTimestamp', eventTimestamp)
+				console.log('deposit', deposit)
+				console.log('maxCapacity', maxCapacity)
 				const txn = await rsvpContract.createNewEvent(eventTimestamp, deposit, maxCapacity, eventDataCID, {
 					gasLimit: 900000,
 				})
@@ -100,35 +107,109 @@ export default function CreateEvent() {
 		console.log(file)
 		setEventImage(file)
 	}
-	const [previewUrl, setPreviewUrl] = useState('')
-	const [type, setType] = useState('')
-	const [files, setFiles] = useState({})
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | File) => {
-		if (e instanceof File) {
-			console.log(e)
-			const previewUrl = URL.createObjectURL(e)
-			setPreviewUrl(previewUrl)
-			setType(e.type)
-			setFiles({ ...e, name: e.name.replace(/\.[^/.]+$/, ''), type: e.type, previewUrl: previewUrl })
-		} else {
-			const file = e.target.files[0]
-			const previewUrl = URL.createObjectURL(file)
-			setPreviewUrl(previewUrl)
 
-			setType(file.type)
-			setFiles({ ...file, name: file.name.replace(/\.[^/.]+$/, ''), type: file.type, previewUrl: previewUrl })
-			console.log(files)
-			console.log(`🚀 -----------------------------------------------------------------------------🚀`)
-			console.log(`🚀 ~ file: MintForm.tsx ~ line 133 ~ handleFileChange ~ previewUrl`, previewUrl, file)
-			console.log(`🚀 -----------------------------------------------------------------------------🚀`)
+	// const [type, setType] = useState('')
+	// const [files, setFiles] = useState({})
 
-			// if (file) {
-			// 	setValue('image', file)
-			// 	clearErrors('image')
-			// }
+	// const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement> | File) => {
+	// 	if (e instanceof File) {
+	// 		const previewUrl = URL.createObjectURL(e)
+	// 		setPreviewUrl(previewUrl)
+	// 		setType(e.type)
+	// 		setFiles({ ...e, name: e.name.replace(/\.[^/.]+$/, ''), type: e.type, previewUrl: previewUrl })
+	// 	} else {
+	// 		const file = e.target.files[0]
+	// 		const previewUrl = URL.createObjectURL(file)
+	// 		setPreviewUrl(previewUrl)
+
+	// 		setType(file.type)
+	// 		setFiles({ ...file, name: file.name.replace(/\.[^/.]+$/, ''), type: file.type, previewUrl: previewUrl })
+
+	// 		const formData = new FormData()
+	// 		formData.append('file', e)
+	// 		console.log('formData', formData)
+	// 		const response = await fetch('/api/upload', {
+	// 			method: 'POST',
+	// 			body: formData,
+	// 		})
+	// 		console.log(response)
+	// 	}
+	// }
+
+	const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const fileInput = e.target
+
+		if (!fileInput.files) {
+			alert('No file was chosen')
+			return
+		}
+
+		if (!fileInput.files || fileInput.files.length === 0) {
+			alert('Files list is empty')
+			return
+		}
+
+		const file = fileInput.files[0]
+
+		/** File validation */
+		if (!file.type.startsWith('image')) {
+			alert('Please select a valide image')
+			return
+		}
+
+		/** Setting file state */
+		setFile(file) // we will use the file state, to send it later to the server
+		console.log(file)
+		setPreviewUrl(URL.createObjectURL(file)) // we will use this to show the preview of the image
+
+		/** Reset file input */
+		e.currentTarget.type = 'text'
+		e.currentTarget.type = 'file'
+	}
+
+	const onCancelFile = (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		if (!previewUrl && !file) {
+			return
+		}
+		setFile(null)
+		setPreviewUrl(null)
+	}
+
+	const onUploadFile = async (e: MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+
+		if (!file) {
+			return
+		}
+
+		try {
+			var formData = new FormData()
+
+			formData.append('media', file)
+
+			const res = await fetch('/api/upload', {
+				method: 'POST',
+				body: formData,
+			})
+
+			const { data, error } = await res.json()
+			setCID('ipfs://' + data.cid)
+			console.log('contentURI', 'ipfs://' + data.cid)
+			if (error || !data) {
+				alert(error || 'Sorry! something went wrong in api call.')
+				return
+			}
+
+			console.log('File was uploaded successfylly:', data)
+		} catch (error) {
+			console.error(error)
+			alert('Sorry! something went wrong.')
 		}
 	}
+
 	if (!mounted) return null
+
 	return (
 		<div className="max-w-5xl px-4 py-4 mx-auto text-black dark:text-white sm:px-6 lg:px-8">
 			<Head>
@@ -216,7 +297,7 @@ export default function CreateEvent() {
 										Event Image
 										<p className="max-w-2xl mt-1 text-sm text-gray-400">The image for your event</p>
 									</label>
-									<div className="mt-1 sm:mt-0 sm:col-span-2">
+									{/* <div className="mt-1 sm:mt-0 sm:col-span-2">
 										<input
 											className="block w-full max-w-lg border border-gray-300 rounded-md shadow-sm cursor-pointer focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
 											type="file"
@@ -225,6 +306,62 @@ export default function CreateEvent() {
 											required
 											onChange={handleFileChange}
 										/>
+									</div> */}
+								</div>
+								<div className="flex flex-col md:flex-row gap-1.5 md:py-4">
+									<div className="flex-grow">
+										{previewUrl ? (
+											<div className="mx-auto w-80">
+												<Image
+													alt="file uploader preview"
+													objectFit="cover"
+													src={previewUrl}
+													width={320}
+													height={218}
+													layout="fixed"
+												/>
+											</div>
+										) : (
+											<label className="flex flex-col items-center justify-center h-full py-3 transition-colors duration-150 cursor-pointer hover:text-gray-600">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													className="w-14 h-14"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth={2}
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+													/>
+												</svg>
+												<strong className="text-sm font-medium">Select an image</strong>
+												<input
+													className="block w-0 h-0"
+													name="file"
+													type="file"
+													onChange={onFileUploadChange}
+												/>
+											</label>
+										)}
+									</div>
+									<div className="flex mt-4 md:mt-0 md:flex-col justify-center gap-1.5">
+										<button
+											disabled={!previewUrl}
+											onClick={onCancelFile}
+											className="w-1/2 px-4 py-3 text-sm font-medium text-white transition-colors duration-300 bg-gray-700 rounded-sm md:w-auto md:text-base disabled:bg-gray-400 hover:bg-gray-600"
+										>
+											Cancel file
+										</button>
+										<button
+											disabled={!previewUrl}
+											onClick={onUploadFile}
+											className="w-1/2 px-4 py-3 text-sm font-medium text-white transition-colors duration-300 bg-gray-700 rounded-sm md:w-auto md:text-base disabled:bg-gray-400 hover:bg-gray-600"
+										>
+											Upload file
+										</button>
 									</div>
 								</div>
 								<div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
