@@ -58,6 +58,7 @@ importers:
   apps/site:
     specifiers:
       '@apollo/client': ^3.6.2
+      '@ethersproject/address': ^5.7.0
       '@ethersproject/bytes': ^5.7.0
       '@headlessui/react': ^1.4.2
       '@heroicons/react': ^1.0.6
@@ -102,6 +103,7 @@ importers:
       web3.storage: ^4.2.0
     dependencies:
       '@apollo/client': 3.7.0_tlq3524jpsy5qsxmlglhyg4wdu
+      '@ethersproject/address': 5.7.0
       '@ethersproject/bytes': 5.7.0
       '@headlessui/react': 1.7.3_ef5jwxihqo6n7gxfmzogljlgcm
       '@heroicons/react': 1.0.6_react@18.1.0
