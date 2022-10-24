@@ -8,7 +8,7 @@ import Button from '../core/Button'
 import NextLink from '../core/NextLink'
 
 export default function Navmenu() {
-	const { address, disconnect, displayName } = useAuth()
+	const { address, disconnect } = useAuth()
 	return (
 		<Menu as="div" className="relative z-10 inline-block text-left">
 			<Menu.Button as={Button} variant="transparent" icon={<Zorb size={24} address={address} />}>
