@@ -1,6 +1,6 @@
 import formidable, { IncomingForm } from "formidable";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getFilesFromPath, Web3Storage, type CIDString } from "web3.storage";
+import { Filelike, getFilesFromPath, Web3Storage, type CIDString } from "web3.storage";
 
 export const FormidableError = formidable.errors.FormidableError;
 
@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       (data?.files?.media as { filepath: string })?.filepath
     )
 
-    const cid = await client.put(files, {
+    const cid = await client.put(files as Iterable<Filelike>, {
       wrapWithDirectory: false,
       maxRetries: 3,
     })
